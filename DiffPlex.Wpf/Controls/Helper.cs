@@ -69,12 +69,17 @@ namespace DiffPlex.Wpf.Controls
 
                 if (!hasAdded)
                 {
-                    var c = viewer.Add(line.Position, changeType switch
+                    string op = " ";
+                    switch (changeType)
                     {
-                        ChangeType.Inserted => "+",
-                        ChangeType.Deleted => "-",
-                        _ => " "
-                    }, text, changeType.ToString(), source);
+                        case ChangeType.Inserted:
+                            op = "+";
+                            break;
+                        case ChangeType.Deleted:
+                            op = "-";
+                            break;
+                    }
+                    var c = viewer.Add(line.Position, op, text, changeType.ToString(), source);
                     c.Tag = line;
                 }
             }
@@ -126,14 +131,22 @@ namespace DiffPlex.Wpf.Controls
             foreach (var ele in line.SubPieces)
             {
                 if (string.IsNullOrEmpty(ele?.Text)) continue;
-                var subType = ele.Type switch
+                ChangeType subType = ChangeType.Imaginary;
+                switch (ele.Type)
                 {
-                    ChangeType.Modified => isOld ? ChangeType.Deleted : ChangeType.Inserted,
-                    ChangeType.Inserted => ChangeType.Inserted,
-                    ChangeType.Deleted => ChangeType.Deleted,
-                    ChangeType.Unchanged => ChangeType.Unchanged,
-                    _ => ChangeType.Imaginary
-                };
+                    case ChangeType.Modified:
+                        subType = isOld ? ChangeType.Deleted : ChangeType.Inserted;
+                        break;
+                    case ChangeType.Inserted:
+                        subType = ChangeType.Inserted;
+                        break;
+                    case ChangeType.Deleted:
+                        subType = ChangeType.Deleted;
+                        break;
+                    case ChangeType.Unchanged:
+                        subType = ChangeType.Unchanged;
+                        break;
+                }
                 var subTypeStr = subType != ChangeType.Imaginary ? subType.ToString() : null;
                 if (details.Count > 0)
                 {
@@ -190,12 +203,17 @@ namespace DiffPlex.Wpf.Controls
 
                 if (!hasAdded)
                 {
-                    var c = panel.Add(line.Position, changeType switch
+                    string op = " ";
+                    switch (changeType)
                     {
-                        ChangeType.Inserted => "+",
-                        ChangeType.Deleted => "-",
-                        _ => " "
-                    }, text, changeType.ToString(), source);
+                        case ChangeType.Inserted:
+                            op = "+";
+                            break;
+                        case ChangeType.Deleted:
+                            op = "-";
+                            break;
+                    }
+                    var c = panel.Add(line.Position, op, text, changeType.ToString(), source);
                     c.Tag = line;
                 }
             }
